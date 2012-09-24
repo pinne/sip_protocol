@@ -9,9 +9,44 @@
 
 public class Main {
 	public static void main(String[] args) {
+		// sc starts in state Waiting
 		StateContext sc = new StateContext();
-		sc.next();
-		sc.next();
-		sc.next();
+
+		// let's send some garbage
+		System.out.println("Sending ack");
+		sc.ack(sc);
+		
+		System.out.println("Sending bye");
+		sc.bye(sc);
+		
+		// finally send the correct message
+		System.out.println("Sending invite");
+		sc.invite(sc);
+		
+		// sc is now in state Calling
+		// let's send some garbage
+		System.out.println("Sending invite");
+		sc.invite(sc);
+		
+		System.out.println("Sending bye");
+		sc.bye(sc);
+		
+		// finally send the correct message
+		System.out.println("Sending ack");
+		sc.ack(sc);
+		
+		// sc is now in state InSession
+		// let's send some garbage
+		System.out.println("Sending invite");
+		sc.invite(sc);
+		
+		System.out.println("Sending ack");
+		sc.ack(sc);
+		
+		// finally send the correct message
+		System.out.println("Sending bye");
+		sc.bye(sc);
+		
+		// sc returns to state Waiting
 	}
 }

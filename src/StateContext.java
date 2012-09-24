@@ -21,4 +21,16 @@ public class StateContext {
 	public void next() {
 		this.myState.next(this);
 	}
+
+	public void invite(StateContext stateContext) {
+		this.myState.invite(stateContext);
+	}
+
+	public void ack(StateContext stateContext) {
+		this.myState.ack(stateContext);
+	}
+
+	public void bye(StateContext stateContext) {
+		this.myState.bye(stateContext);
+	}
 }

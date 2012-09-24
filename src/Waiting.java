@@ -17,5 +17,17 @@ public class Waiting implements State {
 	public void next(StateContext stateContext) {
 		stateContext.setState(new Calling());
 	}
+	
+	public void invite(StateContext stateContext) {
+		stateContext.setState(new Calling());
+	}
+
+	public void ack(StateContext stateContext) {
+		System.out.println("ERROR");
+	}
+
+	public void bye(StateContext stateContext) {
+		System.out.println("ERROR");
+	}
 
 }

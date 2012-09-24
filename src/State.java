@@ -9,4 +9,7 @@
 
 interface State {
 	void next(StateContext stateContext);
+	void invite(StateContext stateContext);
+	void ack(StateContext stateContext);
+	void bye(StateContext stateContext);
 }

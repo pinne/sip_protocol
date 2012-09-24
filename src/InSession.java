@@ -15,5 +15,19 @@ public class InSession implements State {
 	}
 	
 	public void next(StateContext stateContext) {
+		stateContext.setState(new Waiting());
+	}
+	
+	public void invite(StateContext stateContext) {
+		System.out.println("BUSY");
+	}
+
+	public void ack(StateContext stateContext) {
+		System.out.println("ERROR");
+	}
+
+	public void bye(StateContext stateContext) {
+		System.out.println("OK");
+		stateContext.setState(new Waiting());
 	}
 }

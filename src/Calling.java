@@ -17,4 +17,16 @@ public class Calling implements State {
 	public void next(StateContext stateContext) {
 		stateContext.setState(new InSession());
 	}
+	
+	public void invite(StateContext stateContext) {
+		System.out.println("BUSY");
+	}
+
+	public void ack(StateContext stateContext) {
+		stateContext.setState(new InSession());
+	}
+
+	public void bye(StateContext stateContext) {
+		System.out.println("ERROR");
+	}
 }
