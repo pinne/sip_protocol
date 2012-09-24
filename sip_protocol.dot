@@ -1,0 +1,28 @@
+digraph sip_protocol_state {
+	style = filled;
+	color = lightgrey;
+	label = "SIP protocol state diagram";
+	rankdir = TB;
+
+	subgraph waiting {
+		style = filled;
+		color = blue;
+		node [shape = plaintext];
+		"INV"   [label = "\nINVITE"];
+		"100"   [label = "\nTRYING"];
+		"180"   [label = "180\nRINGING"];
+		"200"   [label = "200\nRINGING"];
+		"ACK"   [label = "\nACK"];
+		"BYE"   [label = "\nBYE"];
+		"BUSY"  [label = "\nBUSY"];
+
+		"waiting" -> "INV";
+		"INV" -> "ringing";
+	}
+
+	subgraph "in session" {
+		"INV" -> "BUSY"
+		label = "waiting";
+	}
+}
+
