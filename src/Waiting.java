@@ -15,19 +15,26 @@ public class Waiting implements State {
 	}
 	
 	public void next(StateContext stateContext) {
-		stateContext.setState(new Calling());
+		stateContext.setState(new Ringing());
 	}
 	
-	public void invite(StateContext stateContext) {
-		stateContext.setState(new Calling());
+	public void invite(StateContext stateContext, String s) {
+		System.out.println("Received message: " + s);
+		stateContext.send("100 TRYING");
+		stateContext.send("180 RINGING");
+		stateContext.send("200 OK");
+		
+		// Transition to state Ringing
+		stateContext.setState(new Ringing());
 	}
 
-	public void ack(StateContext stateContext) {
-		System.out.println("ERROR");
+	public void ack(StateContext stateContext, String s) {
+		System.out.println("Received message: " + s);
+		stateContext.send("ERROR");
 	}
 
-	public void bye(StateContext stateContext) {
-		System.out.println("ERROR");
+	public void bye(StateContext stateContext, String s) {
+		System.out.println("Received message: " + s);
+		stateContext.send("ERROR");
 	}
-
 }

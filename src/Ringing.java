@@ -7,15 +7,15 @@
  *                                 KTH STH 2012
  */
 
-public class InSession implements State {
-
-	public InSession() {
+public class Ringing implements State {
+	
+	public Ringing() {
 		System.out.print("STATE: ");
-		System.out.println("inSession");
+		System.out.println("Ringing");
 	}
 	
 	public void next(StateContext stateContext) {
-		stateContext.setState(new Waiting());
+		stateContext.setState(new InSession());
 	}
 	
 	public void invite(StateContext stateContext, String s) {
@@ -25,13 +25,12 @@ public class InSession implements State {
 
 	public void ack(StateContext stateContext, String s) {
 		System.out.println("Received message: " + s);
-		stateContext.send("ERROR");
+		// provide InSession with information for setting up audiostream
+		stateContext.setState(new InSession());
 	}
 
 	public void bye(StateContext stateContext, String s) {
 		System.out.println("Received message: " + s);
-		stateContext.send("OK");
-		// close connection
-		stateContext.setState(new Waiting());
+		stateContext.send("ERROR");
 	}
 }

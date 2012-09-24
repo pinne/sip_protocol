@@ -8,44 +8,37 @@
  */
 
 public class Main {
+	private static final String INVITE =
+			"INVITE thomas.lind@sth.kth.se anders.lindstrom@sth.kth.se 130.10.30.100 130.10.30.101 2566";
+	private static final String ACK = "ACK";
+	private static final String BYE = "BYE";
+	
 	public static void main(String[] args) {
 		// sc starts in state Waiting
 		StateContext sc = new StateContext();
 
 		// let's send some garbage
-		System.out.println("Sending ack");
-		sc.ack(sc);
-		
-		System.out.println("Sending bye");
-		sc.bye(sc);
+		sc.ack(sc, ACK);
+		sc.bye(sc, BYE);
 		
 		// finally send the correct message
-		System.out.println("Sending invite");
-		sc.invite(sc);
+		sc.invite(sc, INVITE);
 		
 		// sc is now in state Calling
 		// let's send some garbage
-		System.out.println("Sending invite");
-		sc.invite(sc);
-		
-		System.out.println("Sending bye");
-		sc.bye(sc);
+		sc.invite(sc, INVITE);
+		sc.bye(sc, BYE);
 		
 		// finally send the correct message
-		System.out.println("Sending ack");
-		sc.ack(sc);
+		sc.ack(sc, ACK);
 		
 		// sc is now in state InSession
 		// let's send some garbage
-		System.out.println("Sending invite");
-		sc.invite(sc);
-		
-		System.out.println("Sending ack");
-		sc.ack(sc);
+		sc.invite(sc, INVITE);
+		sc.ack(sc, ACK);
 		
 		// finally send the correct message
-		System.out.println("Sending bye");
-		sc.bye(sc);
+		sc.bye(sc, BYE);
 		
 		// sc returns to state Waiting
 	}
