@@ -7,9 +7,9 @@
  *                                 KTH STH 2012
  */
 
-public class inSession implements State {
+public class InSession implements State {
 
-	public inSession() {
+	public InSession() {
 		System.out.print("STATE: ");
 		System.out.println("inSession");
 	}
