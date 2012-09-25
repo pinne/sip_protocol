@@ -5,7 +5,7 @@ dvs: 0.02 * 8000 = 160. Ökningen är densamma som den röstdata som skickas (i 
 
 Paket skickade från sändaren:
 
-    Header      32 bit timestamp                  
+    Header      32 bit timestamp
       1 000000100110111010101110010000 // 0102020000 med padding
       2 000000100110111010110000110000 // 0102020160
       3 000000100110111010110011010000 // 0102020320
@@ -31,7 +31,8 @@ Paket till mottagaren:
       9 ------------------------------	   -               -           -
      10 0000001001101110110001000111      230             
 
-Det uppskattade jittret för paket 1 till 2:
-
-D(1,2) = (160 - 0.003 * 8000) - (0 - 0.000 * 8000) = 117
-D(2,3) = (320 - 0.020 * 8000 ) - (160 - 0.023 * 8000) = - 24
+Uppskattad relative transit time.
+Formel: D(i,j) = (Rj - Sj) - (Ri - Si) där ij är sekventa paket och R timestamp och S ankomsttid.
+D(1,2) = (50 - 43) - (0 - 20) = 27
+D(2,3) = (100 - 63) - (50 - 43) = 30
+D(3,4) = (150 - 84) - (100 - 63) = 29
