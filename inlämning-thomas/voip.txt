@@ -36,3 +36,5 @@ Formel: D(i,j) = (Rj - Sj) - (Ri - Si) där ij är sekventa paket och R timestam
 D(1,2) = (50 - 43) - (0 - 20) = 27
 D(2,3) = (100 - 63) - (50 - 43) = 30
 D(3,4) = (150 - 84) - (100 - 63) = 29
+
+2. RTCP
