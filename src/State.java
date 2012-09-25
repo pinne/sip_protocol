@@ -8,8 +8,5 @@
  */
 
 interface State {
-	void next(StateContext stateContext);
-	void invite(StateContext stateContext, String s);
-	void ack(StateContext stateContext, String s);
-	void bye(StateContext stateContext, String s);
+	void parse(StateContext stateContext, String s);
 }
