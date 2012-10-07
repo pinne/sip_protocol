@@ -15,6 +15,12 @@ Paste the client port into the server program.
 
 Enjoy echo chamber!
 
+##UML
+
+###Sequence diagram for handshake
+![SIP handshake]
+(https://raw.github.com/pinne/sip_protocol/master/doc/SIP-sequence_diagram.png "UML sequence diagram for SIP handshake)
+
 ##Protocol sketch
 
     state:  waiting    ringing      in session
