@@ -18,8 +18,7 @@ Enjoy echo chamber!
 ##UML
 
 ###Sequence diagram for handshake
-![SIP handshake]
-(https://raw.github.com/pinne/sip_protocol/master/doc/SIP-sequence_diagram.png "UML sequence diagram for SIP handshake)
+![SIP handshake](https://raw.github.com/pinne/sip_protocol/master/doc/SIP-sequence_diagram.png "UML sequence diagram for SIP handshake")
 
 ##Protocol sketch
 
