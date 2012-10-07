@@ -30,6 +30,7 @@ public class StateContext {
 	}
 
 	public void send(String string) {
+		System.out.println("SENDING: " + string);
 		pw.println(string);
 	}
 

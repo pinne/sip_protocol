@@ -17,17 +17,17 @@ public class StateWaiting implements State {
 	}
 	
 	public void parse(StateContext stateContext, String s) {
-		System.out.println("Parsing message: " + s);
-		
 		StringTokenizer st = new StringTokenizer(s);
 		
 		if (s.startsWith("INVITE") && st.countTokens() >= 6) {
-			stateContext.send("TRYING");
+			// We do not need TRYING when we are without proxy.
+//			stateContext.send("TRYING");
 
 			// Transition to state Ringing
 			stateContext.setState(new StateRinging(stateContext, s));
 		} else {
 			stateContext.send("ERROR");
+			System.exit(-1);
 		}
 	}
 }

@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.net.*;
 import java.util.*;
+import java.util.Scanner;
 
 /**
  * Communication Systems, HI1032
@@ -19,12 +20,14 @@ public class StateRinging implements State {
 		System.out.println("Ringing");
 
 		stateContext.send("RINGING");
+		
 		// parse the string and try to setup a connection
 		try {
 			if (registerCaller(s))
 				stateContext.send("OK");
 
 		} catch (UnknownHostException uhe) {
+			System.out.println("ERROR " + uhe.toString());
 			stateContext.send("ERROR " + uhe.toString());
 		}
 	}
@@ -40,7 +43,9 @@ public class StateRinging implements State {
 		String callerID         = st.nextToken();
 		InetAddress fromAddress = InetAddress.getByName(st.nextToken());
 		InetAddress toAddress   = InetAddress.getByName(st.nextToken());
-		int remotePort          = Integer.parseInt(st.nextToken());
+		int voicePort           = Integer.parseInt(st.nextToken());
+		int remotePort          = 6666;
+		Scanner scan = new Scanner(System.in);
 
 		try {
 			// The AudioStream object will create a socket,
@@ -49,8 +54,12 @@ public class StateRinging implements State {
 			int localPort = stream.getLocalPort();
 			System.out.println("Bound to local port = " + localPort);
 
-			System.out.println("Receiving call from " + fromAddress + ", " + remotePort);
-			stream.connectTo(fromAddress, remotePort);
+			// Set the address and port for the callee.
+			System.out.println("What's the remote port number?");
+			String reply = scan.nextLine().trim();
+			remotePort = Integer.parseInt(reply);
+			System.out.println(toAddress + ", " + remotePort);
+			stream.connectTo(toAddress, remotePort);
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();

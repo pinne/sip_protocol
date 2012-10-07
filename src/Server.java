@@ -43,6 +43,7 @@ public class Server implements Runnable {
 				while (true) {
 					// read message
 					String message = in.readLine();
+					System.out.println("RECEIVED: " + message);
 					// parse message
 					sc.parse(sc, message);
 

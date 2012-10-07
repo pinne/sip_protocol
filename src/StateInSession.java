@@ -24,10 +24,14 @@ public class StateInSession implements State {
 			// close connection
 			this.stream.stopStreaming();
 			stateContext.setState(new StateWaiting());
+		} else if (s.equals("OK")) {
+			System.out.println("Ready to stream");
 		} else if (s.equals("INVITE")) {
 			stateContext.send("BUSY");
 		} else {
 			stateContext.send("ERROR");
+			System.out.println("Error in StateInSession");
+			System.exit(-1);
 		}
 	}
 }
