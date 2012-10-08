@@ -243,7 +243,6 @@ class Sender implements Runnable {
 	    	
 	    	line.start();
 	    	int packets = 0;
-	    	System.out.println("Ready");
 	        while (senderThread != null) {
 	            if((numBytesRead = line.read(data, 0, bufferLengthInBytes)) == -1) {
 	                break;

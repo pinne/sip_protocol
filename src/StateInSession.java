@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 /**
  * Communication Systems, HI1032
  * Lab assignment 4B - Implementation of the SIP protocol
@@ -16,6 +18,12 @@ public class StateInSession implements State {
 		this.stream = stream;
 		System.out.println("Starting stream..");
 		this.stream.startStreaming();
+		
+		// User presses enter to end stream.
+		Scanner scan = new Scanner(System.in);
+		System.out.println("Press ENTER to hang up..");
+		scan.nextLine();
+		this.stream.stopStreaming();
 	}
 
 	public void parse(StateContext stateContext, String s) {
