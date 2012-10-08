@@ -50,7 +50,7 @@ public class StateInvite implements State {
 			}
 			
 			// Transition to state InSession
-			stateContext.setState(new StateInSession((AudioStreamUDP) stream));
+			stateContext.setState(new StateInSession((AudioStreamUDP) stream, stateContext));
 		} else if (s.startsWith("ERROR")) {
 			return;
 		} else {

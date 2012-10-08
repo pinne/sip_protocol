@@ -69,7 +69,7 @@ public class StateRinging implements State {
 	public void parse(StateContext stateContext, String s) {
 		if (s.equals("ACK")) {
 			// provide InSession with information for setting up audio stream
-			stateContext.setState(new StateInSession(stream));
+			stateContext.setState(new StateInSession(stream, stateContext));
 		} else if (s.startsWith("INVITE")) {
 			stateContext.send("BUSY");
 		} else {
