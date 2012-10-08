@@ -15,14 +15,13 @@ import java.util.StringTokenizer;
  */
 
 public class StateInvite implements State {
-	InetAddress dst = null;
-	Socket sock = null;
-	String header = null;
+	private String header = null;
 	
-	AudioStreamUDP stream = null;
-	InetAddress toAddress;
-	int remotePort = -1;
-	private InetAddress fromAddress;
+	private AudioStreamUDP stream = null;
+	private InetAddress localAddress;
+	private int localPort;
+	private InetAddress remoteAddress;
+	private int remotePort;
 	
 	public StateInvite(StateContext stateContext, String[] header) throws IOException {
 		System.out.print("STATE: ");
@@ -41,10 +40,11 @@ public class StateInvite implements State {
 			StringTokenizer st = new StringTokenizer(s);
 			st.nextToken();
 			this.remotePort = Integer.parseInt(st.nextToken());
-			System.out.println("Changing remotePort to: " + remotePort);
+			System.out.println("Local: " + localAddress + ", " + localPort);
+			System.out.println("Remote: " + remoteAddress + ", " + remotePort);
 			
 			try {
-				stream.connectTo(fromAddress, remotePort);
+				stream.connectTo(remoteAddress, remotePort);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -66,25 +66,17 @@ public class StateInvite implements State {
 		String reply = null;
 		Scanner scan = new Scanner(System.in);
 		
-		StringTokenizer st      = new StringTokenizer(header, "\n ");
-		st.nextToken();
-		String receiverID       = st.nextToken();
-		String callerID         = st.nextToken();
-		InetAddress fromAddress = InetAddress.getByName(st.nextToken());
-		this.toAddress          = InetAddress.getByName(st.nextToken());
-		int voicePort           = Integer.parseInt(st.nextToken());
-
 		try {
-			// The AudioStream object will create a socket,
-			// bound to a random port.
-			stream = new AudioStreamUDP();
-			this.remotePort = voicePort;
-			this.fromAddress = fromAddress;
-			
-			// Set the address and port for the callee.
-			System.out.println("What's the remote port number?");
-			System.out.println("Using: " + voicePort);
-			System.out.println(toAddress + ", " + remotePort);
+			StringTokenizer st = new StringTokenizer(header, "\n ");
+			st.nextToken();
+			String receiverID  = st.nextToken();
+			String callerID    = st.nextToken();
+			this.remoteAddress = InetAddress.getByName(st.nextToken());
+			this.localAddress  = InetAddress.getByName(st.nextToken());
+			this.localPort     = Integer.parseInt(st.nextToken());
+
+			// The AudioStream object will create a socket
+			this.stream = new AudioStreamUDP();
 			
 			return true;
 		} catch (IOException e) {

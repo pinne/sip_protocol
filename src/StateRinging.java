@@ -37,27 +37,24 @@ public class StateRinging implements State {
 	 * @throws UnknownHostException 
 	 */
 	private boolean registerCaller(String s[]) throws UnknownHostException {
-		String receiverID       = s[1];
-		String callerID         = s[2];
-		InetAddress fromAddress = InetAddress.getByName(s[3]);
-		InetAddress toAddress   = InetAddress.getByName(s[4]);
-//		int voicePort           = null;
-		int remotePort          = Integer.parseInt(s[5]);
+		String receiverID         = s[1];
+		String callerID           = s[2];
+		InetAddress remoteAddress = InetAddress.getByName(s[4]);
+		InetAddress localAddress  = InetAddress.getByName(s[3]);
+		int remotePort            = Integer.parseInt(s[5]);
 		Scanner scan = new Scanner(System.in);
 
 		try {
 			// The AudioStream object will create a socket,
 			// bound to a random port.
-			stream = new AudioStreamUDP();
+			this.stream = new AudioStreamUDP();
 			int localPort = stream.getLocalPort();
-			System.out.println("Bound to local port = " + localPort);
-
+			
 			// Set the address and port for the callee.
-			System.out.println("What's the remote port number?");
-//			String reply = scan.nextLine().trim();
-//			remotePort = Integer.parseInt(reply);
-			System.out.println("Remote: " + toAddress + ", " + remotePort);
-			stream.connectTo(toAddress, remotePort);
+			System.out.println("Local: " + localAddress + ", " + localPort);
+			System.out.println("Remote: " + remoteAddress + ", " + remotePort);
+			this.stream.connectTo(remoteAddress, remotePort);
+			
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -69,7 +66,7 @@ public class StateRinging implements State {
 	public void parse(StateContext stateContext, String s) {
 		if (s.equals("ACK")) {
 			// provide InSession with information for setting up audio stream
-			stateContext.setState(new StateInSession(stream, stateContext));
+			stateContext.setState(new StateInSession(this.stream, stateContext));
 		} else if (s.startsWith("INVITE")) {
 			stateContext.send("BUSY");
 		} else {
