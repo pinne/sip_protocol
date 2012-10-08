@@ -19,31 +19,18 @@ public class Main {
 		Server server = null;
 
 		System.out.println("SIP protocol implementation");
-		
-		int ans = -1;
-		if (args.length < 1) {
-			System.out.println("Press 1 to start a server");
-			System.out.println("Press 2 to start a client");
-			System.out.println("");
+		System.out.println("USAGE: ");
+		System.out.println("Server: java Main");
+		System.out.println("Client: java Main INVITE receiver@email.com sender@email.com <toIP> <fromIP> <voicePort>");
 
-			Scanner scan = new Scanner(System.in);
-			ans = scan.nextInt();
-		}
-		
-		if (args.length > 0 && args[0].startsWith("s"))
-			ans = 1;
-		else if (args.length > 0)
-			ans = 2;
-			
-		
-		if (ans == 1) { // Start server
+		if (args.length == 0) { // Start server
 			server = new Server(sc);
 			System.out.println("Server started");
-			
+
 			new Thread(server).start();
-		} else if (ans == 2) { // Start client
-			Client client = new Client(sc);
-			
+		} else { // Start client
+			Client client = new Client(sc, args);
+
 			new Thread(client).start();
 			System.out.println("Client started");
 		}

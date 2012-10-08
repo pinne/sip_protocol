@@ -15,7 +15,7 @@ import java.util.Scanner;
 public class StateRinging implements State {
 	AudioStreamUDP stream = null;
 
-	public StateRinging(StateContext stateContext, String s) {
+	public StateRinging(StateContext stateContext, String s[]) {
 		System.out.print("STATE: ");
 		System.out.println("Ringing");
 
@@ -24,7 +24,7 @@ public class StateRinging implements State {
 		// parse the string and try to setup a connection
 		try {
 			if (registerCaller(s))
-				stateContext.send("OK");
+				stateContext.send("OK " + stream.getLocalPort());
 
 		} catch (UnknownHostException uhe) {
 			System.out.println("ERROR " + uhe.toString());
@@ -36,18 +36,17 @@ public class StateRinging implements State {
 	 * Returns true upon successful connection to caller
 	 * @throws UnknownHostException 
 	 */
-	private boolean registerCaller(String s) throws UnknownHostException {
-		StringTokenizer st      = new StringTokenizer(s, "\n ");
-		st.nextToken();
-		String receiverID       = st.nextToken();
-		String callerID         = st.nextToken();
-		InetAddress fromAddress = InetAddress.getByName(st.nextToken());
-		InetAddress toAddress   = InetAddress.getByName(st.nextToken());
-		int voicePort           = Integer.parseInt(st.nextToken());
-		int remotePort          = 6666;
+	private boolean registerCaller(String s[]) throws UnknownHostException {
+		String receiverID       = s[1];
+		String callerID         = s[2];
+		InetAddress fromAddress = InetAddress.getByName(s[3]);
+		InetAddress toAddress   = InetAddress.getByName(s[4]);
+//		int voicePort           = null;
+		int remotePort          = Integer.parseInt(s[5]);
 		Scanner scan = new Scanner(System.in);
 
 		try {
+			System.out.println("hey");
 			// The AudioStream object will create a socket,
 			// bound to a random port.
 			stream = new AudioStreamUDP();
@@ -56,8 +55,9 @@ public class StateRinging implements State {
 
 			// Set the address and port for the callee.
 			System.out.println("What's the remote port number?");
-			String reply = scan.nextLine().trim();
-			remotePort = Integer.parseInt(reply);
+//			String reply = scan.nextLine().trim();
+			System.out.println("Using: " + remotePort);
+//			remotePort = Integer.parseInt(reply);
 			System.out.println(toAddress + ", " + remotePort);
 			stream.connectTo(toAddress, remotePort);
 			return true;

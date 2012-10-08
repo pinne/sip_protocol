@@ -7,11 +7,7 @@ Start the server:
 
 Start the client:
 
-	java Main c
-
-Paste the server port into the client program.
-
-Paste the client port into the server program.
+	java Main INVITE receiver@email.com sender@email.com 127.0.0.1 127.0.0.1 50000 
 
 Enjoy echo chamber!
 

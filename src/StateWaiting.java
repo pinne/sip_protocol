@@ -7,7 +7,10 @@
  *                                 KTH STH 2012
  */
 
+import java.util.Arrays;
 import java.util.StringTokenizer;
+
+import com.sun.xml.internal.fastinfoset.util.StringArray;
 
 public class StateWaiting implements State {
 
@@ -17,17 +20,22 @@ public class StateWaiting implements State {
 	}
 	
 	public void parse(StateContext stateContext, String s) {
-		StringTokenizer st = new StringTokenizer(s);
+		String[] args;
+		args = s.split(" ");
 		
-		if (s.startsWith("INVITE") && st.countTokens() >= 6) {
+		if (s.startsWith("INVITE") && args.length >= 6) {
 			// We do not need TRYING when we are without proxy.
-//			stateContext.send("TRYING");
+			//			stateContext.send("TRYING");
 
 			// Transition to state Ringing
-			stateContext.setState(new StateRinging(stateContext, s));
+			stateContext.setState(new StateRinging(stateContext, args));
 		} else {
 			stateContext.send("ERROR");
 			System.exit(-1);
 		}
+	}
+
+	private String[] toTokens(String s) {
+		return s.split("\\s");
 	}
 }

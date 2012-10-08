@@ -17,24 +17,36 @@ import java.util.StringTokenizer;
 public class StateInvite implements State {
 	InetAddress dst = null;
 	Socket sock = null;
-	AudioStreamUDP stream = null;
 	String header = null;
 	
-	public StateInvite(StateContext stateContext, String header) throws IOException {
+	AudioStreamUDP stream = null;
+	InetAddress toAddress;
+	int remotePort = -1;
+	
+	public StateInvite(StateContext stateContext, String[] header) throws IOException {
 		System.out.print("STATE: ");
 		System.out.println("Invite");
 		
+		String concatenated = concatenateArray(header);
 		// Sending the INVITE string to server.
-		stateContext.send(header);
-		
-		registerReceiver(header);
+		stateContext.send(concatenated);
+		registerReceiver(concatenated);
 	}
 	
 	public void parse(StateContext stateContext, String s) {
-		System.out.println("check");
-		if (s.startsWith("OK") || s.startsWith("RING")) {
+		if (s.startsWith("RING")) {
 			stateContext.send("ACK");
-
+		} else if (s.startsWith("OK")) {
+			StringTokenizer st = new StringTokenizer(s);
+			st.nextToken();
+			this.remotePort = Integer.parseInt(st.nextToken());
+			
+			try {
+				stream.connectTo(toAddress, remotePort);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
 			// Transition to state InSession
 			stateContext.setState(new StateInSession((AudioStreamUDP) stream));
 		} else if (s.startsWith("ERROR")) {
@@ -57,22 +69,19 @@ public class StateInvite implements State {
 		String receiverID       = st.nextToken();
 		String callerID         = st.nextToken();
 		InetAddress fromAddress = InetAddress.getByName(st.nextToken());
-		InetAddress toAddress   = InetAddress.getByName(st.nextToken());
+		this.toAddress          = InetAddress.getByName(st.nextToken());
 		int voicePort           = Integer.parseInt(st.nextToken());
 
 		try {
 			// The AudioStream object will create a socket,
 			// bound to a random port.
 			stream = new AudioStreamUDP();
-			int localPort = stream.getLocalPort();
-			System.out.println("Bound to local port = " + localPort);
+			this.remotePort = voicePort;
 			
 			// Set the address and port for the callee.
 			System.out.println("What's the remote port number?");
-			reply = scan.nextLine().trim();
-			int remotePort = Integer.parseInt(reply);
+			System.out.println("Using: " + voicePort);
 			System.out.println(toAddress + ", " + remotePort);
-			stream.connectTo(toAddress, remotePort);
 			
 			return true;
 		} catch (IOException e) {
@@ -80,5 +89,13 @@ public class StateInvite implements State {
 		}
 
 		return false;
+	}
+	
+	private String concatenateArray(String[] s) {
+		String result = "";
+		for (int i = 0; i < 6; i += 1)
+			result += s[i] + " ";
+		
+		return result;
 	}
 }

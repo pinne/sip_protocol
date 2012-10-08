@@ -12,25 +12,31 @@ import java.net.*;
 
 public class Client implements Runnable {
 	private String INVITE = "INVITE thomas.lind@sth.kth.se anders.lindstrom@sth.kth.se 127.0.0.1 127.0.0.1 2566";
+	private String[] header = null;
 	private static final int SERVER_PORT = 5060;
 	private Socket sock = null;
 	private StateContext stateContext = null;
 	private PrintWriter out = null;
 	private BufferedReader in;
+	
+	private InetAddress remoteAddress = null;
 
-	public Client(StateContext sc) throws IOException {
+	public Client(StateContext sc, String args[]) throws IOException {
+		this.header = args;
+		System.out.println("Making connection");
 		this.stateContext = sc;
 		// Get a stream for sending messages to server 
-		InetAddress iaddr = InetAddress.getByName("localhost");
+		InetAddress iaddr = InetAddress.getByName(header[3]);
 		sock = new Socket(iaddr, SERVER_PORT);
-		System.out.println("Making connection");
 		in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 
 		out = new PrintWriter(sock.getOutputStream(), true);
 		stateContext.setWriter(out);
-		sc.setState(new StateInvite(sc, INVITE));
+		
+		// Finally change the state to Invite
+		sc.setState(new StateInvite(sc, header));
 	}
-
+	
 	public Socket getSocket() {
 		return sock;
 	}
@@ -38,6 +44,7 @@ public class Client implements Runnable {
 	public void run() {
 
 		try {
+			System.out.println("Running thread");
 			while (true) {
 				String message;
 				// read message

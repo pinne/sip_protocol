@@ -32,7 +32,7 @@ public class Server implements Runnable {
 			try {
 				// Get a stream for sending messages to client 
 				servSock = new ServerSocket(SERVER_PORT);
-				System.out.println("Waiting for connection");
+				servSock.setSoTimeout(1000);
 				this.sock = servSock.accept();
 				System.out.println("Connection from " + sock.getInetAddress());
 				BufferedReader in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
@@ -43,6 +43,11 @@ public class Server implements Runnable {
 				while (true) {
 					// read message
 					String message = in.readLine();
+					if (message == null) {
+						sc.setState(new StateWaiting());
+						break;
+					}
+					
 					System.out.println("RECEIVED: " + message);
 					// parse message
 					sc.parse(sc, message);
@@ -50,6 +55,8 @@ public class Server implements Runnable {
 					if (sc.getState() instanceof StateWaiting)
 						break;
 				}
+			} catch (SocketTimeoutException e) {
+				System.out.printf(".");
 			} catch (IOException e) {
 				e.printStackTrace();
 			} finally {
