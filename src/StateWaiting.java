@@ -7,11 +7,6 @@
  *                                 KTH STH 2012
  */
 
-import java.util.Arrays;
-import java.util.StringTokenizer;
-
-import com.sun.xml.internal.fastinfoset.util.StringArray;
-
 public class StateWaiting implements State {
 
 	public StateWaiting() {

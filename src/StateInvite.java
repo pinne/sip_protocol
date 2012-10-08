@@ -22,6 +22,7 @@ public class StateInvite implements State {
 	AudioStreamUDP stream = null;
 	InetAddress toAddress;
 	int remotePort = -1;
+	private InetAddress fromAddress;
 	
 	public StateInvite(StateContext stateContext, String[] header) throws IOException {
 		System.out.print("STATE: ");
@@ -40,9 +41,10 @@ public class StateInvite implements State {
 			StringTokenizer st = new StringTokenizer(s);
 			st.nextToken();
 			this.remotePort = Integer.parseInt(st.nextToken());
+			System.out.println("Changing remotePort to: " + remotePort);
 			
 			try {
-				stream.connectTo(toAddress, remotePort);
+				stream.connectTo(fromAddress, remotePort);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -77,6 +79,7 @@ public class StateInvite implements State {
 			// bound to a random port.
 			stream = new AudioStreamUDP();
 			this.remotePort = voicePort;
+			this.fromAddress = fromAddress;
 			
 			// Set the address and port for the callee.
 			System.out.println("What's the remote port number?");

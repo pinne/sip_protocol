@@ -46,7 +46,6 @@ public class StateRinging implements State {
 		Scanner scan = new Scanner(System.in);
 
 		try {
-			System.out.println("hey");
 			// The AudioStream object will create a socket,
 			// bound to a random port.
 			stream = new AudioStreamUDP();
@@ -56,9 +55,8 @@ public class StateRinging implements State {
 			// Set the address and port for the callee.
 			System.out.println("What's the remote port number?");
 //			String reply = scan.nextLine().trim();
-			System.out.println("Using: " + remotePort);
 //			remotePort = Integer.parseInt(reply);
-			System.out.println(toAddress + ", " + remotePort);
+			System.out.println("Remote: " + toAddress + ", " + remotePort);
 			stream.connectTo(toAddress, remotePort);
 			return true;
 		} catch (IOException e) {
