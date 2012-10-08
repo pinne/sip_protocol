@@ -17,6 +17,9 @@ Enjoy echo chamber!
 
 ##UML
 
+###Class diagram
+![SIP class diagram](https://raw.github.com/pinne/sip_protocol/master/doc/SIP-class_diagram.png "UML class diagram for SIP application")
+
 ###Sequence diagram for handshake
 ![SIP handshake](https://raw.github.com/pinne/sip_protocol/master/doc/SIP-sequence_diagram.png "UML sequence diagram for SIP handshake")
 
