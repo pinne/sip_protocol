@@ -13,7 +13,7 @@ import java.util.StringTokenizer;
  */
 
 public class StateInvite implements State {
-	private AudioStreamUDP stream;
+	private StreamThreadWrapper streamThread;
 	private InetAddress localAddress;
 	private int localPort;
 	private InetAddress remoteAddress;
@@ -40,20 +40,23 @@ public class StateInvite implements State {
 		} else if (s.startsWith("OK")) {
 			// The port number is sent with the OK message.
 			remotePort = getPortNumber(s);
-			localPort = stream.getLocalPort();
+			localPort = streamThread.stream.getLocalPort();
 			System.out.println("Local: " + localAddress + ", " + localPort);
 			System.out.println("Remote: " + remoteAddress + ", " + remotePort);
 			
 			try {
-				stream.connectTo(remoteAddress, remotePort);
+				streamThread.stream.connectTo(remoteAddress, remotePort);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			
 			// Transition to state InSession
-			stateContext.setState(new StateInSession(stream, stateContext));
+			stateContext.setState(new StateInSession(streamThread, stateContext));
 		} else if (s.startsWith("ERROR")) {
 			return;
+		} else if (s.startsWith("BUSY")) {
+			System.out.println("Server is busy");
+			System.exit(0);
 		} else {
 			stateContext.send("ERROR");
 		}
@@ -71,8 +74,9 @@ public class StateInvite implements State {
 			this.localAddress  = InetAddress.getByName(header[4]);
 
 			// The AudioStream object will create a socket
-			this.stream = new AudioStreamUDP();
-			this.localPort = stream.getLocalPort();
+			//this.stream = new AudioStreamUDP();
+			this.streamThread = new StreamThreadWrapper();
+			this.localPort = streamThread.stream.getLocalPort();
 			
 			return true;
 		} catch (IOException e) {

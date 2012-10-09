@@ -13,7 +13,7 @@ import java.util.Scanner;
  */
 
 public class StateRinging implements State {
-	AudioStreamUDP stream = null;
+	StreamThreadWrapper streamThread = null;
 	int localPort;
 
 	public StateRinging(StateContext stateContext, String s[]) {
@@ -48,14 +48,15 @@ public class StateRinging implements State {
 		try {
 			// The AudioStream object will create a socket,
 			// bound to a random port.
-			this.stream = new AudioStreamUDP();
-			this.localPort = this.stream.getLocalPort();
+			//this.stream = new AudioStreamUDP();
+			this.streamThread = new StreamThreadWrapper();
+			this.localPort = this.streamThread.stream.getLocalPort();
 			//int localPort = Integer.parseInt(s[5]);
 			
 			// Set the address and port for the callee.
 			System.out.println("Local: " + localAddress + ", " + localPort);
 			System.out.println("Remote: " + remoteAddress + ", " + remotePort);
-			stream.connectTo(remoteAddress, remotePort);
+			streamThread.stream.connectTo(remoteAddress, remotePort);
 			
 			return true;
 		} catch (IOException e) {
@@ -68,7 +69,7 @@ public class StateRinging implements State {
 	public void parse(StateContext stateContext, String s) {
 		if (s.equals("ACK")) {
 			// provide InSession with information for setting up audio stream
-			stateContext.setState(new StateInSession(this.stream, stateContext));
+			stateContext.setState(new StateInSession(this.streamThread, stateContext));
 		} else if (s.startsWith("INVITE")) {
 			stateContext.send("BUSY");
 		} else {

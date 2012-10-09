@@ -51,7 +51,7 @@ public class Server implements Runnable {
 					// parse message
 					sc.parse(sc, message);
 
-					if (sc.getState() instanceof StateWaiting)
+					if (sc.getState() instanceof StateInSession)
 						break;
 				}
 			} catch (SocketTimeoutException e) {

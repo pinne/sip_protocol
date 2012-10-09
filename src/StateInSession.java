@@ -10,14 +10,16 @@ import java.util.Scanner;
  */
 
 public class StateInSession implements State {
-	AudioStreamUDP stream;
+	StreamThreadWrapper streamThread = null;
 
-	public StateInSession(AudioStreamUDP stream, StateContext stateContext) {
+	public StateInSession(StreamThreadWrapper st, StateContext stateContext) {
 		System.out.print("STATE: ");
 		System.out.println("inSession");
-		this.stream = stream;
 		System.out.println("Starting stream..");
-		this.stream.startStreaming();
+		
+		this.streamThread = st;
+		new Thread(this.streamThread).start();
+		System.out.println("Stream started in thread");
 		
 		// User presses enter to end stream.
 		Scanner scan = new Scanner(System.in);
@@ -32,14 +34,18 @@ public class StateInSession implements State {
 		if (s.equals("BYE")) {
 			stateContext.send("OK");
 			// close connection
-			this.stream.stopStreaming();
+			//this.stream.stopStreaming();
+			this.streamThread.stop();
+			
 			stateContext.setState(new StateWaiting());
 		} else if (s.equals("INVITE")) {
+			System.out.println("Received invite");
 			stateContext.send("BUSY");
 		} else {
-			stateContext.send("ERROR");
-			System.out.println("Error in StateInSession");
-			System.exit(-1);
+			stateContext.send("BUSY");
+			
+			// For debugging purposes only.
+//			System.exit(-1);
 		}
 	}
 }

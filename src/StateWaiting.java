@@ -29,8 +29,4 @@ public class StateWaiting implements State {
 			System.exit(-1);
 		}
 	}
-
-	private String[] toTokens(String s) {
-		return s.split("\\s");
-	}
 }
