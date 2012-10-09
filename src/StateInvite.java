@@ -100,7 +100,7 @@ public class StateInvite implements State {
 		return result;
 	}
 	
-	public void stop(StateContext sc) {
+	public void bye(StateContext sc) {
 		;
 	}
 }

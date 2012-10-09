@@ -31,7 +31,7 @@ public class StateWaiting implements State {
 		}
 	}
 	
-	public void stop(StateContext sc) {
+	public void bye(StateContext sc) {
 		;
 	}
 }

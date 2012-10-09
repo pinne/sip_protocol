@@ -79,7 +79,7 @@ public class StateRinging implements State {
 		}
 	}
 	
-	public void stop(StateContext sc) {
+	public void bye(StateContext sc) {
 		;
 	}
 }

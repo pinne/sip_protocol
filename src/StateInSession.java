@@ -25,8 +25,12 @@ public class StateInSession implements State {
 
 	public void parse(StateContext stateContext, String s) {
 		if (s.equals("BYE")) {
+			stateContext.send("OK");
 			// close connection
-			this.stop(stateContext);
+			streamThread.stop();
+			if (inviter)
+				System.exit(0);
+			
 		} else if (s.equals("INVITE")) {
 			System.out.println("Received invite");
 			stateContext.send("BUSY");
@@ -35,10 +39,10 @@ public class StateInSession implements State {
 		}
 	}
 
-	public void stop(StateContext sc) {
+	public void bye(StateContext sc) {
+		sc.send("BYE");
 		sc.setState(new StateWaiting());
 		if (inviter) {
-			sc.send("OK");
 			System.exit(0);
 		}
 	}

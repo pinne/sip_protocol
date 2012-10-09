@@ -39,7 +39,7 @@ public class StateContext {
 		this.myState.parse(sc, s);
 	}
 
-	public void stop(StateContext sc) {
-		this.myState.stop(sc);
+	public void bye(StateContext sc) {
+		this.myState.bye(sc);
 	}
 }

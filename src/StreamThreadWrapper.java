@@ -35,7 +35,7 @@ public class StreamThreadWrapper implements Runnable {
 	
 	public void stop() {
 		this.stream.stopStreaming();
-		state.stop(state);
+		state.bye(state);
 	}
 
 }
