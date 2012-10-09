@@ -1,8 +1,6 @@
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.Scanner;
 import java.util.StringTokenizer;
 
 /**
@@ -15,25 +13,22 @@ import java.util.StringTokenizer;
  */
 
 public class StateInvite implements State {
-	private String header = null;
-	
 	private AudioStreamUDP stream;
 	private InetAddress localAddress;
 	private int localPort;
 	private InetAddress remoteAddress;
 	private int remotePort;
 	
-	public StateInvite(StateContext stateContext, String[] header, AudioStreamUDP stream) {
+	public StateInvite(StateContext stateContext, String[] header) {
 		System.out.print("STATE: ");
 		System.out.println("Invite");
-		this.localPort = Integer.parseInt(header[5]);
 		
-		this.stream = stream;
-		String concatenated = concatenateArray(header);
-		// Sending the INVITE string to server.
-		stateContext.send(concatenated);
 		try {
-			registerReceiver(concatenated);
+			// Starts the AudioStreamUDP and sets the localPort.
+			registerReceiver(header);
+			
+			// Add the localPort to the INVITE String.
+			stateContext.send(concatenateArray(header) + localPort);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
@@ -43,10 +38,9 @@ public class StateInvite implements State {
 		if (s.startsWith("RING")) {
 			stateContext.send("ACK");
 		} else if (s.startsWith("OK")) {
-			StringTokenizer st = new StringTokenizer(s);
-			st.nextToken();
+			// The port number is sent with the OK message.
+			remotePort = getPortNumber(s);
 			localPort = stream.getLocalPort();
-			remotePort = Integer.parseInt(st.nextToken());
 			System.out.println("Local: " + localAddress + ", " + localPort);
 			System.out.println("Remote: " + remoteAddress + ", " + remotePort);
 			
@@ -69,21 +63,16 @@ public class StateInvite implements State {
 	 * Returns true upon successful connection to receiver
 	 * @throws UnknownHostException 
 	 */
-	private boolean registerReceiver(String header) throws UnknownHostException {
-		String reply = null;
-		Scanner scan = new Scanner(System.in);
-		
+	private boolean registerReceiver(String[] header) throws UnknownHostException {
 		try {
-			StringTokenizer st = new StringTokenizer(header, "\n ");
-			st.nextToken();
-			String receiverID  = st.nextToken();
-			String callerID    = st.nextToken();
-			this.remoteAddress = InetAddress.getByName(st.nextToken());
-			this.localAddress  = InetAddress.getByName(st.nextToken());
-//			this.localPort     = Integer.parseInt(st.nextToken());
+			String receiverID  = header[1];
+			String callerID    = header[2];
+			this.remoteAddress = InetAddress.getByName(header[3]);
+			this.localAddress  = InetAddress.getByName(header[4]);
 
 			// The AudioStream object will create a socket
-//			this.stream = new AudioStreamUDP();
+			this.stream = new AudioStreamUDP();
+			this.localPort = stream.getLocalPort();
 			
 			return true;
 		} catch (IOException e) {
@@ -93,11 +82,17 @@ public class StateInvite implements State {
 		return false;
 	}
 	
+	private int getPortNumber(String s) {
+		StringTokenizer st = new StringTokenizer(s);
+		st.nextToken();
+		return Integer.parseInt(st.nextToken());
+	}
+
 	private String concatenateArray(String[] s) {
 		String result = "";
 		for (int i = 0; i < s.length; i += 1)
 			result += s[i] + " ";
-		
+
 		return result;
 	}
 }

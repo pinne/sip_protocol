@@ -11,7 +11,6 @@ import java.io.*;
 import java.net.*;
 
 public class Server implements Runnable {
-	private String INVITE = "INVITE thomas.lind@sth.kth.se anders.lindstrom@sth.kth.se 127.0.0.1 127.0.0.1 2566";
 	private static final int SERVER_PORT = 5060;
 	private ServerSocket servSock = null;
 	private Socket sock = null;

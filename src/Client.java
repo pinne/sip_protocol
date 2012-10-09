@@ -9,7 +9,6 @@
 
 import java.io.*;
 import java.net.*;
-import java.sql.Array;
 
 public class Client implements Runnable {
 	private static final int SERVER_PORT = 5060;
@@ -29,13 +28,8 @@ public class Client implements Runnable {
 		out = new PrintWriter(sock.getOutputStream(), true);
 		stateContext.setWriter(out);
 		
-		AudioStreamUDP stream = new AudioStreamUDP();
-		String[] header = new String[args.length+1];
-		System.arraycopy(args, 0, header, 0, args.length);
-		header[header.length-1] = Integer.toString(stream.getLocalPort());
-		System.out.println(header[5]);
 		// Finally change the state to Invite
-		sc.setState(new StateInvite(sc, header, stream));
+		sc.setState(new StateInvite(sc, args));
 	}
 	
 	public void run() {
