@@ -9,38 +9,35 @@
 
 import java.io.*;
 import java.net.*;
+import java.sql.Array;
 
 public class Client implements Runnable {
-	private String INVITE = "INVITE thomas.lind@sth.kth.se anders.lindstrom@sth.kth.se 127.0.0.1 127.0.0.1 2566";
-	private String[] header = null;
 	private static final int SERVER_PORT = 5060;
 	private Socket sock = null;
 	private StateContext stateContext = null;
 	private PrintWriter out = null;
 	private BufferedReader in;
 	
-	private InetAddress remoteAddress = null;
-
 	public Client(StateContext sc, String args[]) throws IOException {
-		this.header = args;
 		System.out.println("Making connection");
 		this.stateContext = sc;
 		// Get a stream for sending messages to server 
-		InetAddress iaddr = InetAddress.getByName(header[3]);
+		InetAddress iaddr = InetAddress.getByName(args[3]);
 		sock = new Socket(iaddr, SERVER_PORT);
 		in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 
 		out = new PrintWriter(sock.getOutputStream(), true);
 		stateContext.setWriter(out);
 		
+		AudioStreamUDP stream = new AudioStreamUDP();
+		String[] header = new String[args.length+1];
+		System.arraycopy(args, 0, header, 0, args.length);
+		header[header.length-1] = Integer.toString(stream.getLocalPort());
+		System.out.println(header[5]);
 		// Finally change the state to Invite
-		sc.setState(new StateInvite(sc, header));
+		sc.setState(new StateInvite(sc, header, stream));
 	}
 	
-	public Socket getSocket() {
-		return sock;
-	}
-
 	public void run() {
 
 		try {
@@ -63,5 +60,9 @@ public class Client implements Runnable {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public Socket getSocket() {
+		return sock;
 	}
 }

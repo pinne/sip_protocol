@@ -10,7 +10,7 @@ import java.util.Scanner;
  */
 
 public class StateInSession implements State {
-	AudioStreamUDP stream = null;
+	AudioStreamUDP stream;
 
 	public StateInSession(AudioStreamUDP stream, StateContext stateContext) {
 		System.out.print("STATE: ");
@@ -21,12 +21,11 @@ public class StateInSession implements State {
 		
 		// User presses enter to end stream.
 		Scanner scan = new Scanner(System.in);
-		System.out.println("Press ENTER to hang up..");
-		scan.nextLine();
+//		System.out.println("Press ENTER to hang up..");
+//		scan.nextLine();
 		
-		stateContext.send("BYE");
-		this.stream.stopStreaming();
-		System.exit(0);
+//		stateContext.send("BYE");
+//		this.stream.stopStreaming();
 	}
 
 	public void parse(StateContext stateContext, String s) {
@@ -35,8 +34,6 @@ public class StateInSession implements State {
 			// close connection
 			this.stream.stopStreaming();
 			stateContext.setState(new StateWaiting());
-		} else if (s.equals("OK")) {
-			System.out.println("Ready to stream");
 		} else if (s.equals("INVITE")) {
 			stateContext.send("BUSY");
 		} else {

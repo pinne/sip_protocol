@@ -17,20 +17,26 @@ import java.util.StringTokenizer;
 public class StateInvite implements State {
 	private String header = null;
 	
-	private AudioStreamUDP stream = null;
+	private AudioStreamUDP stream;
 	private InetAddress localAddress;
 	private int localPort;
 	private InetAddress remoteAddress;
 	private int remotePort;
 	
-	public StateInvite(StateContext stateContext, String[] header) throws IOException {
+	public StateInvite(StateContext stateContext, String[] header, AudioStreamUDP stream) {
 		System.out.print("STATE: ");
 		System.out.println("Invite");
+		this.localPort = Integer.parseInt(header[5]);
 		
+		this.stream = stream;
 		String concatenated = concatenateArray(header);
 		// Sending the INVITE string to server.
 		stateContext.send(concatenated);
-		registerReceiver(concatenated);
+		try {
+			registerReceiver(concatenated);
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void parse(StateContext stateContext, String s) {
@@ -39,7 +45,8 @@ public class StateInvite implements State {
 		} else if (s.startsWith("OK")) {
 			StringTokenizer st = new StringTokenizer(s);
 			st.nextToken();
-			this.remotePort = Integer.parseInt(st.nextToken());
+			localPort = stream.getLocalPort();
+			remotePort = Integer.parseInt(st.nextToken());
 			System.out.println("Local: " + localAddress + ", " + localPort);
 			System.out.println("Remote: " + remoteAddress + ", " + remotePort);
 			
@@ -50,7 +57,7 @@ public class StateInvite implements State {
 			}
 			
 			// Transition to state InSession
-			stateContext.setState(new StateInSession((AudioStreamUDP) stream, stateContext));
+			stateContext.setState(new StateInSession(stream, stateContext));
 		} else if (s.startsWith("ERROR")) {
 			return;
 		} else {
@@ -73,10 +80,10 @@ public class StateInvite implements State {
 			String callerID    = st.nextToken();
 			this.remoteAddress = InetAddress.getByName(st.nextToken());
 			this.localAddress  = InetAddress.getByName(st.nextToken());
-			this.localPort     = Integer.parseInt(st.nextToken());
+//			this.localPort     = Integer.parseInt(st.nextToken());
 
 			// The AudioStream object will create a socket
-			this.stream = new AudioStreamUDP();
+//			this.stream = new AudioStreamUDP();
 			
 			return true;
 		} catch (IOException e) {
@@ -88,7 +95,7 @@ public class StateInvite implements State {
 	
 	private String concatenateArray(String[] s) {
 		String result = "";
-		for (int i = 0; i < 6; i += 1)
+		for (int i = 0; i < s.length; i += 1)
 			result += s[i] + " ";
 		
 		return result;

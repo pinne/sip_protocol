@@ -14,6 +14,7 @@ import java.util.Scanner;
 
 public class StateRinging implements State {
 	AudioStreamUDP stream = null;
+	int localPort;
 
 	public StateRinging(StateContext stateContext, String s[]) {
 		System.out.print("STATE: ");
@@ -24,7 +25,7 @@ public class StateRinging implements State {
 		// parse the string and try to setup a connection
 		try {
 			if (registerCaller(s))
-				stateContext.send("OK " + stream.getLocalPort());
+				stateContext.send("OK " + localPort);
 
 		} catch (UnknownHostException uhe) {
 			System.out.println("ERROR " + uhe.toString());
@@ -39,8 +40,8 @@ public class StateRinging implements State {
 	private boolean registerCaller(String s[]) throws UnknownHostException {
 		String receiverID         = s[1];
 		String callerID           = s[2];
-		InetAddress remoteAddress = InetAddress.getByName(s[4]);
 		InetAddress localAddress  = InetAddress.getByName(s[3]);
+		InetAddress remoteAddress = InetAddress.getByName(s[4]);
 		int remotePort            = Integer.parseInt(s[5]);
 		Scanner scan = new Scanner(System.in);
 
@@ -48,12 +49,13 @@ public class StateRinging implements State {
 			// The AudioStream object will create a socket,
 			// bound to a random port.
 			this.stream = new AudioStreamUDP();
-			int localPort = stream.getLocalPort();
+			this.localPort = this.stream.getLocalPort();
+			//int localPort = Integer.parseInt(s[5]);
 			
 			// Set the address and port for the callee.
 			System.out.println("Local: " + localAddress + ", " + localPort);
 			System.out.println("Remote: " + remoteAddress + ", " + remotePort);
-			this.stream.connectTo(remoteAddress, remotePort);
+			stream.connectTo(remoteAddress, remotePort);
 			
 			return true;
 		} catch (IOException e) {

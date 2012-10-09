@@ -18,7 +18,7 @@ public class StateWaiting implements State {
 		String[] args;
 		args = s.split(" ");
 		
-		if (s.startsWith("INVITE") && args.length >= 6) {
+		if (s.startsWith("INVITE") && args.length >= 5) {
 			// We do not need TRYING when we are without proxy.
 			//			stateContext.send("TRYING");
 
