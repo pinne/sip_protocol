@@ -25,7 +25,7 @@ public class StateInvite implements State {
 		
 		try {
 			// Starts the AudioStreamUDP and sets the localPort.
-			registerReceiver(header);
+			registerReceiver(header, stateContext);
 			
 			// Add the localPort to the INVITE String.
 			stateContext.send(concatenateArray(header) + localPort);
@@ -51,7 +51,7 @@ public class StateInvite implements State {
 			}
 			
 			// Transition to state InSession
-			stateContext.setState(new StateInSession(streamThread, stateContext));
+			stateContext.setState(new StateInSession(streamThread, stateContext, true));
 		} else if (s.startsWith("ERROR")) {
 			return;
 		} else if (s.startsWith("BUSY")) {
@@ -66,7 +66,7 @@ public class StateInvite implements State {
 	 * Returns true upon successful connection to receiver
 	 * @throws UnknownHostException 
 	 */
-	private boolean registerReceiver(String[] header) throws UnknownHostException {
+	private boolean registerReceiver(String[] header, StateContext stateContext) throws UnknownHostException {
 		try {
 			String receiverID  = header[1];
 			String callerID    = header[2];
@@ -75,7 +75,7 @@ public class StateInvite implements State {
 
 			// The AudioStream object will create a socket
 			//this.stream = new AudioStreamUDP();
-			this.streamThread = new StreamThreadWrapper();
+			this.streamThread = new StreamThreadWrapper(stateContext);
 			this.localPort = streamThread.stream.getLocalPort();
 			
 			return true;
@@ -98,5 +98,9 @@ public class StateInvite implements State {
 			result += s[i] + " ";
 
 		return result;
+	}
+	
+	public void stop(StateContext sc) {
+		;
 	}
 }

@@ -11,41 +11,35 @@ import java.util.Scanner;
 
 public class StateInSession implements State {
 	StreamThreadWrapper streamThread = null;
+	public boolean inviter = false;
 
-	public StateInSession(StreamThreadWrapper st, StateContext stateContext) {
+	public StateInSession(StreamThreadWrapper st, StateContext stateContext, boolean inviter) {
 		System.out.print("STATE: ");
 		System.out.println("inSession");
 		System.out.println("Starting stream..");
-		
+		this.inviter = inviter;
+
 		this.streamThread = st;
 		new Thread(this.streamThread).start();
-		System.out.println("Stream started in thread");
-		
-		// User presses enter to end stream.
-		Scanner scan = new Scanner(System.in);
-//		System.out.println("Press ENTER to hang up..");
-//		scan.nextLine();
-		
-//		stateContext.send("BYE");
-//		this.stream.stopStreaming();
 	}
 
 	public void parse(StateContext stateContext, String s) {
 		if (s.equals("BYE")) {
-			stateContext.send("OK");
 			// close connection
-			//this.stream.stopStreaming();
-			this.streamThread.stop();
-			
-			stateContext.setState(new StateWaiting());
+			this.stop(stateContext);
 		} else if (s.equals("INVITE")) {
 			System.out.println("Received invite");
 			stateContext.send("BUSY");
 		} else {
 			stateContext.send("BUSY");
-			
-			// For debugging purposes only.
-//			System.exit(-1);
+		}
+	}
+
+	public void stop(StateContext sc) {
+		sc.setState(new StateWaiting());
+		if (inviter) {
+			sc.send("OK");
+			System.exit(0);
 		}
 	}
 }

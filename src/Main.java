@@ -25,9 +25,8 @@ public class Main {
 
 		if (args.length == 0) { // Start server
 			server = new Server(sc);
-			System.out.println("Server started");
-
 			new Thread(server).start();
+			System.out.println("Server started");
 		} else { // Start client
 			Client client = new Client(sc, args);
 

@@ -42,15 +42,11 @@ public class Server implements Runnable {
 				while (true) {
 					// read message
 					String message = in.readLine();
-					if (message == null) {
-						sc.setState(new StateWaiting());
-						break;
+					if (message != null) {
+						System.out.println("RECEIVED: " + message);
+						// parse message
+						sc.parse(sc, message);
 					}
-					
-					System.out.println("RECEIVED: " + message);
-					// parse message
-					sc.parse(sc, message);
-
 					if (sc.getState() instanceof StateInSession)
 						break;
 				}

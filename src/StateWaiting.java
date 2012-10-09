@@ -24,9 +24,14 @@ public class StateWaiting implements State {
 
 			// Transition to state Ringing
 			stateContext.setState(new StateRinging(stateContext, args));
+		} else if (s.startsWith("BYE")) {
+			stateContext.send("OK");
 		} else {
 			stateContext.send("ERROR");
-			System.exit(-1);
 		}
+	}
+	
+	public void stop(StateContext sc) {
+		;
 	}
 }

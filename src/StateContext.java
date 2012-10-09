@@ -38,4 +38,8 @@ public class StateContext {
 	public void parse(StateContext sc, String s) {
 		this.myState.parse(sc, s);
 	}
+
+	public void stop(StateContext sc) {
+		this.myState.stop(sc);
+	}
 }

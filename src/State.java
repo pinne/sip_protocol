@@ -9,4 +9,5 @@
 
 interface State {
 	void parse(StateContext stateContext, String s);
+	void stop(StateContext stateContext);
 }
