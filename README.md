@@ -7,7 +7,7 @@ Start the server:
 
 Start the client:
 
-	java Main INVITE receiver@email.com sender@email.com 127.0.0.1 127.0.0.1 50000 
+	java Main INVITE receiver@email.com sender@email.com 127.0.0.1 127.0.0.1 
 
 Enjoy echo chamber!
 
